@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For You ❤️</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Georgia", serif;
+    background: #09070d;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* ---------------- BACKGROUND ---------------- */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 80, 130, .16), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(150, 70, 255, .12), transparent 30%);
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* ---------------- PASSWORD SCREEN ---------------- */
+
+#lockScreen {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    text-align: center;
+    position: relative;
+}
+
+.lockBox {
+    width: 100%;
+    max-width: 430px;
+    padding: 45px 28px;
+    border-radius: 30px;
+
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.15);
+
+    backdrop-filter: blur(18px);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+
+    animation: appear 1.5s ease;
+}
+
+.heartIcon {
+    font-size: 65px;
+    animation: heartbeat 1.5s infinite;
+    margin-bottom: 15px;
+}
+
+.lockBox h1 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.lockBox p {
+    color: #d8d1da;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.hint {
+    margin-top: 15px;
+    font-size: 13px !important;
+    color: #a9a1ad !important;
+}
+
+.passwordArea {
+    margin-top: 28px;
+}
+
+input {
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(0,0,0,.3);
+    color: white;
+    outline: none;
+    text-align: center;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+.unlockBtn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+
+    background: linear-gradient(135deg,#ff4f87,#9d5cff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    box-shadow: 0 10px 30px rgba(255,70,130,.25);
+    transition: .3s;
+}
+
+.unlockBtn:hover {
+    transform: translateY(-3px);
+}
+
+#error {
+    color: #ff799e;
+    margin-top: 12px;
+    display: none;
+}
+
+/* ---------------- MAIN WEBSITE ---------------- */
+
+#mainContent {
+    display: none;
+}
+
+section {
+    min-height: 100vh;
+    padding: 90px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+}
+
+/* HERO */
+
+.hero h1 {
+    font-size: clamp(45px, 9vw, 90px);
+    line-height: 1;
+    margin-bottom: 25px;
+
+    background: linear-gradient(
+        90deg,
+        #fff,
+        #ff9fbd,
+        #c69cff,
+        #fff
+    );
+
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: gradientMove 5s infinite;
+}
+
+.hero p {
+    color: #cfc6d0;
+    font-size: 18px;
+    line-height: 1.8;
+    max-width: 650px;
+    margin: auto;
+}
+
+.scrollText {
+    margin-top: 60px;
+    color: #ff8fb0;
+    animation: bounce 2s infinite;
+}
+
+/* ---------------- LETTER ---------------- */
+
+.letterCard {
+    max-width: 750px;
+    margin: auto;
+
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.12);
+
+    border-radius: 30px;
+    padding: 45px 30px;
+
+    backdrop-filter: blur(15px);
+
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+}
+
+.sectionTitle {
+    font-size: 38px;
+    margin-bottom: 25px;
+}
+
+.letterCard p {
+    color: #ded7df;
+    line-height: 2;
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+.signature {
+    margin-top: 35px;
+    color: #ff91b1;
+    font-size: 22px;
+    font-style: italic;
+}
+
+/* ---------------- PHOTOS ---------------- */
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
+    margin-top: 35px;
+}
+
+.photo {
+    height: 300px;
+    border-radius: 22px;
+    overflow: hidden;
+    position: relative;
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.35);
+
+    transition: .4s;
+}
+
+.photo:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+.photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    padding: 25px 15px 15px;
+
+    background: linear-gradient(transparent,rgba(0,0,0,.85));
+
+    font-size: 14px;
+}
+
+/* ---------------- SURPRISE ---------------- */
+
+.surpriseBox {
+    max-width: 700px;
+    margin: auto;
+}
+
+.gift {
+    font-size: 100px;
+    cursor: pointer;
+    display: inline-block;
+
+    animation: heartbeat 1.5s infinite;
+}
+
+.clickText {
+    color: #aaa;
+    margin-top: 15px;
+}
+
+#finalMessage {
+    display: none;
+    margin-top: 35px;
+
+    padding: 40px 25px;
+
+    background: rgba(255,255,255,.06);
+    border-radius: 30px;
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    animation: appear 1s ease;
+}
+
+#finalMessage h2 {
+    font-size: 38px;
+    color: #ff91b1;
+    margin-bottom: 20px;
+}
+
+#finalMessage p {
+    color: #ddd;
+    line-height: 1.9;
+    font-size: 17px;
+}
+
+/* ---------------- FOOTER ---------------- */
+
+footer {
+    padding: 50px 20px;
+    text-align: center;
+    color: #777;
+}
+
+footer span {
+    color: #ff6d9b;
+}
+
+/* ---------------- HEARTS ---------------- */
+
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 18px;
+    pointer-events: none;
+    animation: floatHeart linear forwards;
+    z-index: 100;
+}
+
+/* ---------------- CONFETTI ---------------- */
+
+.confetti {
+    position: fixed;
+    width: 8px;
+    height: 14px;
+    top: -20px;
+    z-index: 999;
+    animation: fall 4s linear forwards;
+}
+
+/* ---------------- ANIMATIONS ---------------- */
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heartbeat {
+    0%,100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0%; }
+    50% { background-position: 100%; }
+    100% { background-position: 0%; }
+}
+
+@keyframes bounce {
+    0%,100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+@keyframes floatHeart {
+    to {
+        transform:
+            translateY(-110vh)
+            translateX(var(--move))
+            rotate(30deg);
+        opacity: 0;
+    }
+}
+
+@keyframes fall {
+    to {
+        transform:
+            translateY(110vh)
+            rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* ---------------- MOBILE ---------------- */
+
+@media(max-width:700px) {
+
+    section {
+        padding: 70px 16px;
+    }
+
+    .lockBox {
+        padding: 40px 22px;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .photo {
+        height: 390px;
+    }
+
+    .sectionTitle {
+        font-size: 30px;
+    }
+
+    .letterCard {
+        padding: 35px 22px;
+    }
+
+    .letterCard p {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOCK SCREEN ================= -->
+
+<div id="lockScreen">
+
+    <div class="lockBox">
+
+        <div class="heartIcon">❤️</div>
+
+        <h1>Something is waiting for you...</h1>
+
+        <p>
+            This little world was made especially for you.
+            But there's one tiny secret standing between
+            you and the surprise. 🤍
+        </p>
+
+        <p class="hint">
+            Hint: It's three little words.
+        </p>
+
+        <div class="passwordArea">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter the secret code..."
+                autocomplete="off"
+            >
+
+            <button class="unlockBtn" onclick="unlock()">
+                Unlock My Heart ❤️
+            </button>
+
+            <div id="error">
+                Hmm... that's not the secret. Try again ❤️
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div id="mainContent">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div style="font-size:50px;margin-bottom:20px;">
+                🎂✨❤️
+            </div>
+
+            <h1>Happy Birthday</h1>
+
+            <p>
+                To someone who became a beautiful part
+                of my life without even realizing how
+                special he became.
+            </p>
+
+            <div class="scrollText">
+                ↓ I made something for you ↓
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LETTER -->
+
+    <section>
+
+        <div class="container">
+
+            <div class="letterCard">
+
+                <div style="font-size:45px;margin-bottom:15px;">
+                    💌
+                </div>
+
+                <h2 class="sectionTitle">
+                    A little letter for you
+                </h2>
+
+                <p>
+                    Today is your birthday, but somehow
+                    I feel like I'm the lucky one for having
+                    you in my life.
+                </p>
+
+                <p>
+                    There are people we meet and forget,
+                    people who stay for a moment,
+                    and then there are people who quietly
+                    become a part of our memories,
+                    our smiles and our everyday thoughts.
+                </p>
+
+                <p>
+                    You are one of those people for me.
+                </p>
+
+                <p>
+                    I don't know what the future holds,
+                    and I don't know where life will take
+                    us, but I do know that some moments
+                    become special simply because they
+                    were shared with someone special.
+                </p>
+
+                <p>
+                    So today, I just want you to know
+                    that you matter. More than you probably
+                    realize.
+                </p>
+
+                <p>
+                    I hope this new year of your life gives
+                    you reasons to smile on the days when
+                    you don't feel like smiling, people who
+                    genuinely care for you, and memories
+                    you'll want to keep forever.
+                </p>
+
+                <p>
+                    And whenever life gets a little heavy,
+                    I hope you remember that somewhere,
+                    someone is quietly wishing the very
+                    best for you. ❤️
+                </p>
+
+                <div class="signature">
+                    Happy Birthday, you. ❤️
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MEMORIES -->
+
+    <section>
+
+        <div class="container">
+
+            <div style="font-size:45px;">
+                📸
+            </div>
+
+            <h2 class="sectionTitle">
+                Little memories
+            </h2>
+
+            <p style="color:#aaa;line-height:1.7;">
+                Some moments don't need a caption.
+                They just need to be remembered.
+            </p>
+
+
+            <div class="gallery">
+
+                <!-- PHOTO 1 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo1.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        One of those moments I'll always remember ❤️
+                    </span>
+
+                </div>
+
+
+                <!-- PHOTO 2 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo2.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        A memory that still makes me smile.
+                    </span>
+
+                </div>
+
+
+                <!-- PHOTO 3 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo3.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        Some moments are simply priceless. ✨
+                    </span>
+
+                </div>
+
+
+                <!-- PHOTO 4 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo4.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        If I could keep one moment forever...
+                    </span>
+
+                </div>
+
+
+                <!-- PHOTO 5 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo5.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        You + me + a memory worth keeping.
+                    </span>
+
+                </div>
+
+
+                <!-- PHOTO 6 -->
+
+                <div class="photo">
+
+                    <img
+                        src="images/photo6.jpg"
+                        alt="Our memory"
+                    >
+
+                    <span>
+                        And here's to many more memories. ❤️
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FINAL SURPRISE -->
+
+    <section>
+
+        <div class="container surpriseBox">
+
+            <div style="font-size:45px;">
+                🎁
+            </div>
+
+            <h2 class="sectionTitle">
+                One last thing...
+            </h2>
+
+            <p style="color:#aaa;line-height:1.8;">
+                I couldn't end this without giving you
+                one more little surprise.
+            </p>
+
+            <div
+                class="gift"
+                onclick="openGift()"
+            >
+                🎁
+            </div>
+
+            <div class="clickText">
+                Tap the gift ❤️
+            </div>
+
+
+            <div id="finalMessage">
+
+                <h2>For You ❤️</h2>
+
+                <p>
+                    If you ever wonder whether you are
+                    important to me...
+                </p>
+
+                <p>
+                    come back to this little page.
+                </p>
+
+                <p>
+                    Read these words again.
+                </p>
+
+                <p>
+                    Look at these memories again.
+                </p>
+
+                <p>
+                    And remember that someone took the
+                    time to create an entire little corner
+                    of the internet just to make you smile
+                    on your birthday.
+                </p>
+
+                <p>
+                    Because sometimes saying
+                    <b>"I love you"</b>
+                    isn't enough.
+                </p>
+
+                <p>
+                    Sometimes you have to turn it into
+                    a whole website. 🥹❤️
+                </p>
+
+                <br>
+
+                <p style="color:#ff91b1;font-size:20px;">
+                    Happy Birthday. ❤️
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        Made with <span>♥</span> for someone special.
+    </footer>
+
+</div>
+
+
+<script>
+
+/* ================= PASSWORD ================= */
+
+function unlock() {
+
+    const input =
+        document.getElementById("password").value
+        .trim()
+        .toLowerCase();
+
+    const correctPassword = "i love you";
+
+    if (input === correctPassword) {
+
+        document.getElementById("lockScreen").style.display = "none";
+
+        document.getElementById("mainContent").style.display = "block";
+
+        document.body.style.overflowX = "hidden";
+
+        createConfetti();
+
+        setInterval(createHeart, 900);
+
+    } else {
+
+        document.getElementById("error").style.display = "block";
+
+    }
+}
+
+
+/* ENTER KEY */
+
+document
+.getElementById("password")
+.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        unlock();
+    }
+
+});
+
+
+/* ================= GIFT ================= */
+
+function openGift() {
+
+    const message =
+        document.getElementById("finalMessage");
+
+    message.style.display = "block";
+
+    createConfetti();
+
+    message.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ================= HEARTS ================= */
+
+function createHeart() {
+
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+
+    const hearts = ["❤️","💕","💗","💖","💘","✨"];
+
+    heart.innerHTML =
+        hearts[Math.floor(Math.random() * hearts.length)];
+
+    heart.style.left =
+        Math.random() * 100 + "vw";
+
+    heart.style.setProperty(
+        "--move",
+        (Math.random() * 160 - 80) + "px"
+    );
+
+    heart.style.animationDuration =
+        (4 + Math.random() * 5) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 9000);
+
+}
+
+
+/* ================= CONFETTI ================= */
+
+function createConfetti() {
+
+    for (let i = 0; i < 80; i++) {
+
+        const piece =
+            document.createElement("div");
+
+        piece.className = "confetti";
+
+        piece.style.left =
+            Math.random() * 100 + "vw";
+
+        piece.style.width =
+            (5 + Math.random() * 7) + "px";
+
+        piece.style.height =
+            (8 + Math.random() * 10) + "px";
+
+        piece.style.background =
+            `hsl(${Math.random() * 360}, 80%, 70%)`;
+
+        piece.style.animationDelay =
+            Math.random() * 2 + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(() => {
+            piece.remove();
+        }, 6000);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
